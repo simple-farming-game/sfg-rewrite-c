@@ -1,5 +1,10 @@
 #include <array>
 #include <utility> // for std::pair
+#include <iostream>
+#include <fstream>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 namespace nova {
 
@@ -33,4 +38,23 @@ namespace nova {
         }};
     }
 
+    // JSON 파일을 읽고 파싱하는 함수
+    json parseJsonFile(const std::string& filePath) {
+        std::ifstream inputFile(filePath);
+
+        // 파일 열기 확인
+        if (!inputFile.is_open()) {
+            throw std::runtime_error("Could not open the file: " + filePath);
+        }
+
+        // JSON 파일 읽기
+        json jsonData;
+        try {
+            inputFile >> jsonData;
+        } catch (const json::parse_error& e) {
+            throw std::runtime_error("JSON parsing error: " + std::string(e.what()));
+        }
+
+        return jsonData;
+    }
 }

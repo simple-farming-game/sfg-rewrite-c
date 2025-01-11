@@ -1,21 +1,23 @@
-# 기존 Debug 디렉토리 삭제
-Remove-Item -Path .\build\Debug -Recurse -Force
+# Remove existing Debug directory
+if (Test-Path -Path .\build\Debug) {
+    Remove-Item -Path .\build\Debug -Recurse -Force
+    echo "[INFO] Existing Debug directory has been deleted."
+} else {
+    echo "[INFO] No Debug directory to delete. Proceeding with the next steps."
+}
 
-# 구분선 출력
+# Print separator
 echo --------------------
 echo build
 echo --------------------
 
-# CMake로 Debug 빌드 구성 생성
-cmake -Bbuild . -DCMAKE_BUILD_TYPE=Debug
-
-# Debug 빌드 실행
+# Build Debug configuration
 cmake --build build --config Debug --target SFG
 
-# 구분선 출력
+# Print separator
 echo --------------------
 echo run
 echo --------------------
 
-# 디렉토리 이동 및 실행
+# Navigate to directory and execute
 .\build\Debug\SFG.exe

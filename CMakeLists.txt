@@ -43,11 +43,30 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glm)
 
+# Assimp 라이브러리 추가
+FetchContent_Declare(
+    assimp
+    GIT_REPOSITORY https://github.com/assimp/assimp.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(assimp)
+
+# nlohmann/json 라이브러리 추가
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(nlohmann_json)
+
 # 소스 파일 설정
 file(GLOB SOURCES "src/*.cpp")
 
+# assets 포트 파일 추가
+file(GLOB ASSETS "assets/*")
+
 # 실행 파일 생성
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES} ${ASSETS})
 
 # stb_image.h 파일 포함 경로 설정
 target_include_directories(${PROJECT_NAME} PRIVATE ${stb_image_SOURCE_DIR})
@@ -57,7 +76,13 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${glm_SOURCE_DIR})
 # include 디렉토리 경로 설정
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
-# 운영체제별 OpenGL 라이브러리 설정
+# Assimp 포함 경로 설정
+target_include_directories(${PROJECT_NAME} PRIVATE ${assimp_SOURCE_DIR}/include)
+
+# nlohmann/json 포함 경로 설정
+target_include_directories(${PROJECT_NAME} PRIVATE ${nlohmann_json_SOURCE_DIR}/include)
+
+# 운영체세별 OpenGL 라이브러리 설정
 if(WIN32)
     target_link_libraries(${PROJECT_NAME} opengl32) # Windows용 OpenGL
 elseif(APPLE)
@@ -71,5 +96,5 @@ else()
     target_link_libraries(${PROJECT_NAME} OpenGL::GL)  # Linux OpenGL
 endif()
 
-# GLFW와 glad 라이브러리 링크
-target_link_libraries(${PROJECT_NAME} glfw glad)
+# GLFW, glad, Assimp, nlohmann/json 라이브러리 맵형품화
+target_link_libraries(${PROJECT_NAME} glfw glad assimp nlohmann_json::nlohmann_json)
